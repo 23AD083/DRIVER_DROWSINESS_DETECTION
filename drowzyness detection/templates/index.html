@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drowsiness Detection Program</title>
+    <style>
+        /* General Styling */
+        body {
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .video-section {
+            margin: 30px 0;
+        }
+
+        .video-section img {
+            width: 80%;
+            max-width: 600px;
+            border: 5px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #555;
+            transform: scale(1.05);
+        }
+
+        footer {
+            margin-top: 40px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Drowsiness Detection Program
+    </header>
+
+    <div class="container">
+        <section class="intro">
+            <h2>Stay Alert, Stay Safe</h2>
+            <p>
+                Welcome to the Drowsiness Detection Program. Our system uses advanced machine learning and computer vision
+                to monitor your eyes and detect signs of fatigue in real time. This tool aims to enhance safety for drivers, 
+                operators, and others prone to drowsiness in critical situations.
+            </p>
+            <p>
+                Click the button below to start the detection program using your webcam.
+            </p>
+
+        <!-- Live Detection Video -->
+        <section class="video-section">
+            <h3>Live Drowsiness Detection </h3>
+            <img id="video-stream" src="{{ url_for('video_feed') }}" alt="Video Stream">
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="action-buttons">
+            <button id="start-btn" onclick="startPrediction()">Start Prediction</button>
+            <button id="stop-btn" onclick="stopPrediction()">Stop Prediction</button>
+        </section>
+    </div>
+
+    <footer>
+        <p>Developed with ❤️ by the Drowsiness Detection Team</p>
+        <p>"Stay alert, stay safe!"</p>
+    </footer>
+
+    <script>
+        // JavaScript for Start and Stop Prediction
+        function startPrediction() {
+            const videoStream = document.getElementById('video-stream');
+            videoStream.src = "{{ url_for('video_feed') }}"; // Resume the video stream
+            alert("Prediction Started!");
+        }
+
+        function stopPrediction() {
+            // Send POST request to stop prediction
+            fetch('/stop_prediction', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    const videoStream = document.getElementById('video-stream');
+                    videoStream.src = ''; // Stop the video stream
+                    alert(data.message);
+                })
+                .catch(error => console.error("Error stopping prediction:", error));
+        }
+    </script>
+</body>
+</html>
